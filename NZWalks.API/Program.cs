@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using NZWalks.API.Data;
+using NZWalks.API.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,10 +11,17 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// Used to get Connection String from AppSettings.json file
 builder.Services.AddDbContext<DbContextNZWalks>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("NZWalks"));
 });
+
+//Used to To Map Region Class - creating object
+builder.Services.AddScoped<IRegionRepository, RegionRepository>();
+
+//Below used for AutoMapper
+builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
 var app = builder.Build();
 
