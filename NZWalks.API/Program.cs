@@ -23,6 +23,10 @@ builder.Services.AddScoped<IRegionRepository, RegionRepository>();
 //Used to To Map Walk Class - creating object
 builder.Services.AddScoped<IWalkRepository, WalkRepository>();
 
+//Used to To Map WalkDifficulty Class - creating object
+builder.Services.AddScoped<IWalkDifficultyRepository, WalkDifficultyRepository>();
+
+
 //Below used for AutoMapper
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
