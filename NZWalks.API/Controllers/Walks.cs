@@ -158,15 +158,17 @@ namespace NZWalks.API.Controllers
         #region Private Methods
         private async Task<bool> ValidateAddWalk(API.Models.DTO.AddWalkRequest addWalkRequest)
         {
-            if (string.IsNullOrWhiteSpace(addWalkRequest.Name))
-            {
-                ModelState.AddModelError(nameof(addWalkRequest.Name), "Name should not be empty");
-            }
+            //Below Commented instead used FLUENT VALIDATION FOR THESE 2 FIELDS
 
-            if (addWalkRequest.Length <= 0)
-            {
-                ModelState.AddModelError(nameof(addWalkRequest.Length), "Length should be greater than zero");
-            }
+            //if (string.IsNullOrWhiteSpace(addWalkRequest.Name))
+            //{
+            //    ModelState.AddModelError(nameof(addWalkRequest.Name), "Name should not be empty");
+            //}
+
+            //if (addWalkRequest.Length <= 0)
+            //{
+            //    ModelState.AddModelError(nameof(addWalkRequest.Length), "Length should be greater than zero");
+            //}
 
             var region = await _regionRepository.GetRegionByIdAsync(addWalkRequest.RegionId);
             if (region == null)
@@ -186,15 +188,17 @@ namespace NZWalks.API.Controllers
 
         private async Task<bool> ValidateUpdateWalk(API.Models.DTO.UpdateWalkRequest updateWalkRequest)
         {
-            if (string.IsNullOrWhiteSpace(updateWalkRequest.Name))
-            {
-                ModelState.AddModelError(nameof(updateWalkRequest.Name), $"{updateWalkRequest.Name} can't be empty");
-            }
+            //Below Commented instead used FLUENT VALIDATION FOR THESE 2 FIELDS
 
-            if (updateWalkRequest.Length <= 0)
-            {
-                ModelState.AddModelError(nameof(updateWalkRequest.Length), "Lenth should not less than zero");
-            }
+            //if (string.IsNullOrWhiteSpace(updateWalkRequest.Name))
+            //{
+            //    ModelState.AddModelError(nameof(updateWalkRequest.Name), $"{updateWalkRequest.Name} can't be empty");
+            //}
+
+            //if (updateWalkRequest.Length <= 0)
+            //{
+            //    ModelState.AddModelError(nameof(updateWalkRequest.Length), "Lenth should not less than zero");
+            //}
 
             //Used to check Given regionId Already present or not in Region table.(PK_FK)
             var regionId = await _regionRepository.GetRegionByIdAsync(updateWalkRequest.RegionId);

@@ -55,11 +55,11 @@ namespace NZWalks.API.Controllers
         [HttpPost]
         public async Task<IActionResult> AddWalkDifficulty(API.Models.DTO.AddWalkDifficulty walkDifficulty)
         {
-            //Validate the DTO before processing
-            if (!ValidateAddWalkDifficulty(walkDifficulty))
-            {
-                return BadRequest(ModelState);
-            }
+            //Validate the DTO before processing  -> commented instead used FLUENT VALIDATION
+            //if (!ValidateAddWalkDifficulty(walkDifficulty))
+            //{
+            //    return BadRequest(ModelState);
+            //}
 
             // Convert DTO to Domain
             var walkDifficultyDomain = new Controllers.Models.Domain.WalkDifficulty()
@@ -103,11 +103,11 @@ namespace NZWalks.API.Controllers
         public async Task<IActionResult> UpdateWalkDifficulty([FromRoute] Guid id,
             [FromBody] API.Models.DTO.UpdateWalkDifficulty updateWalkDifficulty)
         {
-            //Validate Model before processing
-            if (!ValidateUpdateWalkDifficulty(updateWalkDifficulty))
-            {
-                return BadRequest(ModelState);
-            }
+            //Validate Model before processing  - instead used FLUENT VALIDATION
+            //if (!ValidateUpdateWalkDifficulty(updateWalkDifficulty))
+            //{
+            //    return BadRequest(ModelState);
+            //}
 
             //Convert to Domain from DTO
             var walkDifficultyDomain = new Controllers.Models.Domain.WalkDifficulty()

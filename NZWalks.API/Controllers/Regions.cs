@@ -72,11 +72,11 @@ namespace NZWalks.API.Controllers
         [HttpPost]
         public async Task<IActionResult> AddRegionAsync(AddRegionRequest addRegion)
         {
-            //Validate the request
-            if (!ValidateAddRegion(addRegion))
-            {
-                return BadRequest(ModelState);
-            }
+            //Validate the request  -> Commented this function instead used FLUENT VALIDATION
+            //if (!ValidateAddRegion(addRegion))
+            //{
+            //    return BadRequest(ModelState);
+            //}
 
             //Convert Request DTO to domain Model
             var region = new Models.Domain.Region()
@@ -141,10 +141,12 @@ namespace NZWalks.API.Controllers
         [Route("{id:guid}")]
         public async Task<IActionResult> UpdateRegionsById([FromRoute] Guid id, [FromBody] UpdateRegionRequest updateRegionRequest)
         {
-            if (!ValidateUpdateRegion(updateRegionRequest))
-            {
-                return BadRequest(ModelState);
-            }
+            //Validate the Incoming data -> commented this instead used FLUENT VALIDATION
+            //if (!ValidateUpdateRegion(updateRegionRequest))
+            //{
+            //    return BadRequest(ModelState);
+            //}
+
             //Convert DTO to Domain Model
             var region = new Controllers.Models.Domain.Region()
             {
@@ -207,16 +209,7 @@ namespace NZWalks.API.Controllers
                 ModelState.AddModelError(nameof(addRegionRequest.Area),
                     $"{nameof(addRegionRequest.Area)} cant't be less than zero");
             }
-            if (addRegionRequest.Lat <= 0)
-            {
-                ModelState.AddModelError(nameof(addRegionRequest.Lat),
-                    $"{nameof(addRegionRequest.Lat)} cant't be less than zero");
-            }
-            if (addRegionRequest.Long <= 0)
-            {
-                ModelState.AddModelError(nameof(addRegionRequest.Long),
-                    $"{nameof(addRegionRequest.Long)} cant't be less than zero");
-            }
+            
             if (addRegionRequest.Population <= 0)
             {
                 ModelState.AddModelError(nameof(addRegionRequest.Population),
