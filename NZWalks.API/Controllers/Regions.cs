@@ -49,6 +49,7 @@ namespace NZWalks.API.Controllers
             var regionsDTO = _mapper.Map<List<DTO.Region>>(regions);
 
             return Ok(regionsDTO);
+
         }
 
         [HttpGet]
