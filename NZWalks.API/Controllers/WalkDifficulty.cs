@@ -55,6 +55,12 @@ namespace NZWalks.API.Controllers
         [HttpPost]
         public async Task<IActionResult> AddWalkDifficulty(API.Models.DTO.AddWalkDifficulty walkDifficulty)
         {
+            //Validate the DTO before processing
+            if (!ValidateAddWalkDifficulty(walkDifficulty))
+            {
+                return BadRequest(ModelState);
+            }
+
             // Convert DTO to Domain
             var walkDifficultyDomain = new Controllers.Models.Domain.WalkDifficulty()
             {
@@ -97,6 +103,12 @@ namespace NZWalks.API.Controllers
         public async Task<IActionResult> UpdateWalkDifficulty([FromRoute] Guid id,
             [FromBody] API.Models.DTO.UpdateWalkDifficulty updateWalkDifficulty)
         {
+            //Validate Model before processing
+            if (!ValidateUpdateWalkDifficulty(updateWalkDifficulty))
+            {
+                return BadRequest(ModelState);
+            }
+
             //Convert to Domain from DTO
             var walkDifficultyDomain = new Controllers.Models.Domain.WalkDifficulty()
             {
@@ -118,5 +130,41 @@ namespace NZWalks.API.Controllers
             //Return the response
             return Ok(walkDifficultyDTO);
         }
+
+        #region Private Method
+        private bool ValidateAddWalkDifficulty(API.Models.DTO.AddWalkDifficulty walkDifficulty)
+        {
+            if (string.IsNullOrWhiteSpace(walkDifficulty.Code))
+            {
+                ModelState.AddModelError(nameof(walkDifficulty.Code), $"{walkDifficulty.Code} can't be empty");
+            }
+            if (walkDifficulty.Code.Length < 2)
+            {
+                ModelState.AddModelError(nameof(walkDifficulty.Code), "Code should be less than 2 characters");
+            }
+            if (ModelState.ErrorCount>0)
+                return false;
+
+            return true;
+        }
+
+        private bool ValidateUpdateWalkDifficulty(API.Models.DTO.UpdateWalkDifficulty updateWalkDifficulty)
+        {
+            if (string.IsNullOrWhiteSpace(updateWalkDifficulty.Code))
+            {
+                ModelState.AddModelError(nameof(updateWalkDifficulty.Code), $"Can't be less empty");
+            }
+
+            if (updateWalkDifficulty.Code.Length < 2)
+            {
+                ModelState.AddModelError(nameof(updateWalkDifficulty.Code), "Code should be greater than 2 characters");
+            }
+
+            if (ModelState.IsValid)
+                return true;
+
+            return false;
+        }
+        #endregion
     }
 }

@@ -5,6 +5,8 @@ using NZWalks.API.Controllers.Models.Domain;
 using NZWalks.API.Data;
 using NZWalks.API.Models.DTO;
 using NZWalks.API.Repository;
+using System.Net;
+using System.Net.Sockets;
 
 namespace NZWalks.API.Controllers
 {
@@ -70,6 +72,12 @@ namespace NZWalks.API.Controllers
         [HttpPost]
         public async Task<IActionResult> AddRegionAsync(AddRegionRequest addRegion)
         {
+            //Validate the request
+            if (!ValidateAddRegion(addRegion))
+            {
+                return BadRequest(ModelState);
+            }
+
             //Convert Request DTO to domain Model
             var region = new Models.Domain.Region()
             {
@@ -133,6 +141,10 @@ namespace NZWalks.API.Controllers
         [Route("{id:guid}")]
         public async Task<IActionResult> UpdateRegionsById([FromRoute] Guid id, [FromBody] UpdateRegionRequest updateRegionRequest)
         {
+            if (!ValidateUpdateRegion(updateRegionRequest))
+            {
+                return BadRequest(ModelState);
+            }
             //Convert DTO to Domain Model
             var region = new Controllers.Models.Domain.Region()
             {
@@ -145,7 +157,7 @@ namespace NZWalks.API.Controllers
             };
 
             //Update region using repository
-            var regionResult =  await _regionRepository.UpdateAsync(id, region);
+            var regionResult = await _regionRepository.UpdateAsync(id, region);
 
             //If Null then NotFound
             if (regionResult == null)
@@ -156,17 +168,93 @@ namespace NZWalks.API.Controllers
             //convert Domain back to DTO
             var regionDTO = new Controllers.DTO.Region()
             {
-                 Area = regionResult.Area,
-                 Code=regionResult.Code,
-                 Name = regionResult.Name,
-                 Lat = regionResult.Lat,
-                 Long= regionResult.Long,
-                 Population= regionResult.Population
+                Area = regionResult.Area,
+                Code = regionResult.Code,
+                Name = regionResult.Name,
+                Lat = regionResult.Lat,
+                Long = regionResult.Long,
+                Population = regionResult.Population
             };
 
             //Return Ok Response
             return Ok(regionDTO);
 
         }
+
+        #region Private Method
+        private bool ValidateAddRegion(API.Models.DTO.AddRegionRequest addRegionRequest)
+        {
+            if (addRegionRequest == null)
+            {
+                ModelState.AddModelError(nameof(addRegionRequest), $"Add Region Data is required !");
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(addRegionRequest.Code))
+            {
+                ModelState.AddModelError(addRegionRequest.Code,
+                    $"{nameof(addRegionRequest.Code)} can't be empty or white space!");
+            }
+
+            if (string.IsNullOrWhiteSpace(addRegionRequest.Name))
+            {
+                ModelState.AddModelError(addRegionRequest.Name,
+                    $"{nameof(addRegionRequest.Name)} can't be empty or white space!");
+            }
+
+            if (addRegionRequest.Area <= 0)
+            {
+                ModelState.AddModelError(nameof(addRegionRequest.Area),
+                    $"{nameof(addRegionRequest.Area)} cant't be less than zero");
+            }
+            if (addRegionRequest.Lat <= 0)
+            {
+                ModelState.AddModelError(nameof(addRegionRequest.Lat),
+                    $"{nameof(addRegionRequest.Lat)} cant't be less than zero");
+            }
+            if (addRegionRequest.Long <= 0)
+            {
+                ModelState.AddModelError(nameof(addRegionRequest.Long),
+                    $"{nameof(addRegionRequest.Long)} cant't be less than zero");
+            }
+            if (addRegionRequest.Population <= 0)
+            {
+                ModelState.AddModelError(nameof(addRegionRequest.Population),
+                    $"{nameof(addRegionRequest.Population)} cant't be less than zero");
+            }
+
+            if (ModelState.ErrorCount > 0)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        private bool ValidateUpdateRegion(API.Models.DTO.UpdateRegionRequest updateRegionRequest)
+        {
+            if (string.IsNullOrWhiteSpace(updateRegionRequest.Name))
+            {
+                ModelState.AddModelError(nameof(updateRegionRequest.Name),
+                    $"{updateRegionRequest.Name} Can't be empty!");
+            }
+            if (string.IsNullOrWhiteSpace(updateRegionRequest.Code))
+            {
+                ModelState.AddModelError(nameof(updateRegionRequest.Code),
+                    $"{updateRegionRequest.Code} cant't be empty");
+            }
+            if (updateRegionRequest.Name.Length <= 2)
+            {
+                ModelState.AddModelError(nameof(updateRegionRequest.Name),
+                    "should be minumum 2 characters");
+            }
+
+            if (ModelState.ErrorCount > 0)
+            {
+                return false;
+            }
+            return true;
+        }
+        #endregion
+
     }
 }
