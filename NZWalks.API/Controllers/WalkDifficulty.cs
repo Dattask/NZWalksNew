@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using NZWalks.API.Repository;
@@ -6,7 +7,7 @@ using NZWalks.API.Repository;
 namespace NZWalks.API.Controllers
 {
     [ApiController]
-    [Route("controller")]
+    [Route("WalkDifficulty")]
     public class WalkDifficulty : Controller
     {
         private readonly IWalkDifficultyRepository _walkDifficultyRepository;
@@ -19,6 +20,7 @@ namespace NZWalks.API.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "reader")]
         public async Task<IActionResult> GetAllWalkDifficulty()
         {
             //Get data from Database
@@ -34,6 +36,7 @@ namespace NZWalks.API.Controllers
         [HttpGet]
         [Route("{id:guid}")]
         [ActionName("GetWalkDifficultyById")]
+        [Authorize(Roles = "reader")]
         public async Task<IActionResult> GetWalkDifficultyById(Guid id)
         {
             // call the repository and get the details
@@ -53,6 +56,7 @@ namespace NZWalks.API.Controllers
         }
 
         [HttpPost]
+        [Authorize( Roles ="writer")]
         public async Task<IActionResult> AddWalkDifficulty(API.Models.DTO.AddWalkDifficulty walkDifficulty)
         {
             //Validate the DTO before processing  -> commented instead used FLUENT VALIDATION
@@ -86,6 +90,7 @@ namespace NZWalks.API.Controllers
 
         [HttpDelete]
         [Route("{id:guid}")]
+        [Authorize(Roles = "writer")]
         public async Task<IActionResult> DeleteWalkDifficulty(Guid id)
         {
             //call the Repository to delete the record
@@ -100,6 +105,7 @@ namespace NZWalks.API.Controllers
 
         [HttpPut]
         [Route("{id:guid}")]
+        [Authorize(Roles = "writer")]
         public async Task<IActionResult> UpdateWalkDifficulty([FromRoute] Guid id,
             [FromBody] API.Models.DTO.UpdateWalkDifficulty updateWalkDifficulty)
         {
@@ -112,7 +118,7 @@ namespace NZWalks.API.Controllers
             //Convert to Domain from DTO
             var walkDifficultyDomain = new Controllers.Models.Domain.WalkDifficulty()
             {
-                 Code = updateWalkDifficulty.Code
+                Code = updateWalkDifficulty.Code
             };
 
             //Call the repository
@@ -142,7 +148,7 @@ namespace NZWalks.API.Controllers
             {
                 ModelState.AddModelError(nameof(walkDifficulty.Code), "Code should be less than 2 characters");
             }
-            if (ModelState.ErrorCount>0)
+            if (ModelState.ErrorCount > 0)
                 return false;
 
             return true;
